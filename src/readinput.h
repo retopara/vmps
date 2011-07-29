@@ -15,7 +15,8 @@ class RI
         RI ():  NS(1), VD(1), MTH(0), INIT_CFG (0), CL(1),
                 J1X(0.0), J1Y(0.0), J1Z(0.0), J2X(0.0), J2Y(0.0), J2Z(0.0),
                 HX(0.0), HY(0.0), HZ(0.0), TOL(5e-3), CALC_FES(false), 
-                OUT_CFG (false), USE_PBC(false), OUT_MAG (0), OUT_CORR (0)
+                OUT_CFG (false), USE_PBC(false), OUT_MAG (0), OUT_CORR (0),
+								USE_SPLIT (false), SPLITJ1X(0), SPLITJ1Y(0), SPLITJ1Z(0)
         {}
        ~RI () {}
 
@@ -26,9 +27,9 @@ class RI
         int printVal ();
 
         //  variables 
-        int NS, VD, MTH, INIT_CFG, CL;
+        int NS, VD, MTH, INIT_CFG, CL, SPLITJ1X, SPLITJ1Y, SPLITJ1Z;
         double J1X, J1Y, J1Z, J2X, J2Y, J2Z, HX, HY, HZ, TOL;
-        bool CALC_FES, OUT_MAG, OUT_CORR, OUT_CFG, USE_PBC;
+        bool CALC_FES, OUT_MAG, OUT_CORR, OUT_CFG, USE_PBC, USE_SPLIT;
 };
 
 #endif

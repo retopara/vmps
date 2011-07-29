@@ -17,6 +17,24 @@ VMPS::VMPS (const RI& ri)
 
     //  hset
     setMatrixH (ri);
+		//  output hset
+		cout << "hset is :" << endl;
+		for (int i=0; i<M; i++)
+		{
+			for (int j=0; j<N; j++)
+			{
+				if (hset[i][j] == sx) cout << "\tsx";
+				else if (hset[i][j] == -sx) cout << "\t-sx";
+				else if (hset[i][j] == sy) cout << "\tsy";
+				else if (hset[i][j] == -sy) cout << "\t-sy";
+				else if (hset[i][j] == sz) cout << "\tsz";
+				else if (hset[i][j] == -sz) cout << "\t-sz";
+				else if (hset[i][j] == id) cout << "\tid";
+			}
+			cout << "\n";
+		}
+		abort();
+
 
     //  init MPS
     mpsGS = new MPS (ri.NS, ri.VD, ri.USE_PBC, ri.INIT_CFG);
@@ -68,6 +86,9 @@ void VMPS::setMatrixH (const RI& ri)
 {
     //  copy data
     N = ri.NS;
+		SPJ1X = ri.SPLITJ1X - 1,
+		SPJ1Y = ri.SPLITJ1Y - 1,
+		SPJ1Z = ri.SPLITJ1Z - 1;
 
     /****************
      * TEST BEGIN
@@ -133,13 +154,18 @@ void VMPS::setMatrixH (const RI& ri)
                 else hset[p+i][j] = id;
             }
         }
-
+				
         if (ri.USE_PBC)
         {
             hset[p+N-1][0] = -ri.J1X*sx;
             hset[p+N-1][N-1] = sx;
             for (int j=1; j<N-1; j++) hset[p+N-1][j] = id;
         }
+
+				if (ri.USE_SPLIT)
+				{
+					hset[p+SPJ1X][SPJ1X] = hset[p+SPJ1X][SPJ1X+1] = id;
+				}
 
         //  update
         p += (ri.USE_PBC==true) ? N:N-1;
@@ -157,13 +183,17 @@ void VMPS::setMatrixH (const RI& ri)
                 else hset[p+i][j] = id;
             }
         }
-
         if (ri.USE_PBC)
         {
             hset[p+N-1][0] = -ri.J1Y*sy;
             hset[p+N-1][N-1] = sy;
             for (int j=1; j<N-1; j++) hset[p+N-1][j] = id;
         }
+
+				if (ri.USE_SPLIT)
+				{
+					hset[p+SPJ1Y][SPJ1Y] = hset[p+SPJ1Y][SPJ1Y+1] = id;
+				}
 
         //  update
         p += (ri.USE_PBC==true) ? N:N-1;
@@ -188,6 +218,11 @@ void VMPS::setMatrixH (const RI& ri)
             hset[p+N-1][N-1] = sz;
             for (int j=1; j<N-1; j++) hset[p+N-1][j] = id;
         }
+
+				if (ri.USE_SPLIT)
+				{
+					hset[p+SPJ1Z][SPJ1Z] = hset[p+SPJ1Z][SPJ1Z+1] = id;
+				}
 
         //  update
         p += (ri.USE_PBC==true) ? N:N-1;
@@ -1732,6 +1767,9 @@ int VMPS::Output (const RI& ri)
             << "\nHX    =   " << ri.HX
             << "\nHY    =   " << ri.HY
             << "\nHZ    =   " << ri.HZ
+            << "\nSPLITJ1X    =   " << ri.SPLITJ1X
+            << "\nSPLITJ1Y    =   " << ri.SPLITJ1Y
+            << "\nSPLITJ1Z    =   " << ri.SPLITJ1Z
             << endl;
 
     //  output energy

@@ -65,6 +65,7 @@ class VMPS
         void getConfig (const MPS&, CFGSTR&) const;
 
         int M, N; // M: total terms in Halmitonian, N: site
+				int SPJ1X, SPJ1Y, SPJ1Z; //sequence number of split site in Hamiltonian
         MatrixXcd** hset;
 
         //  auxilliary storages 

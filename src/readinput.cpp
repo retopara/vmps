@@ -68,6 +68,10 @@ int RI::readInputVar ()
             if (string (data) == "OUT_CORR")         infile >> OUT_CORR;
             if (string (data) == "OUT_CFG")         infile >> OUT_CFG;
             if (string (data) == "USE_PBC")         infile >> USE_PBC;
+            if (string (data) == "USE_SPLIT")         infile >> USE_SPLIT;
+            if (string (data) == "SPLITJ1X")         infile >> SPLITJ1X;
+            if (string (data) == "SPLITJ1Y")         infile >> SPLITJ1Y;
+            if (string (data) == "SPLITJ1Z")         infile >> SPLITJ1Z;
         }
     }
 
@@ -109,9 +113,13 @@ int RI::printVal ()
             << "\nTOL   =   " << TOL
             << "\nCALC_FES   =   " << CALC_FES
             << "\nUSE_PBC   =   " << USE_PBC
+            << "\nUSE_SPLIT	=   " << USE_SPLIT 
             << "\nOUT_MAG  =   " << OUT_MAG
             << "\nOUT_CORR   =   " << OUT_CORR
             << "\nOUT_CFG   =   " << OUT_CFG
+            << "\nSPLITJ1X	=   " << SPLITJ1X 
+            << "\nSPLITJ1Y	=   " << SPLITJ1Y 
+            << "\nSPLITJ1Z	=   " << SPLITJ1Z 
             << endl;
     outfile.close ();
     return 0;
