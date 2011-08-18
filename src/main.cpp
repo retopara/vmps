@@ -16,7 +16,7 @@ int main (int argc, char** argv)
         qsDiagSolver.DiagH ();
         qsDiagSolver.Output (ri);
     }
-    else
+    if (ri.MTH == 1)
     {
         //  using variational method
         VMPS qsVMPSsolver (ri);
@@ -37,6 +37,14 @@ int main (int argc, char** argv)
         //  output res
         qsVMPSsolver.Output (ri);
     }
+    if (ri.MTH == 2)
+		{
+			//no optimization
+			VMPS qsVMPSsolver (ri);
+			
+			//output res
+			qsVMPSsolver.Output (ri);
+		}
 
     return 0;
 }

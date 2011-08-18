@@ -74,7 +74,7 @@ class VMPS
         MatrixXcd*  Nstorage;
 
         //  Pauli Matrix
-        MatrixXcd sx, sy, sz, id;
+        MatrixXcd sx, sy, sz, id, zr;
 
         //  ground state / first exicited state
         double E0, E1;

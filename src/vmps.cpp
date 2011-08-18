@@ -7,7 +7,7 @@ VMPS::VMPS (const RI& ri)
       , timeOUT (0.0), timeOPT (0.0), timeOPT_one (0.0)
 {
     //  auxilliary matrix
-    sx = sy = sz = id = MatrixXcd::Zero (2,2);
+    sx = sy = sz = id = zr = MatrixXcd::Zero (2,2);
     sx (1,0) = sx (0,1) = 1.0;
     sy (0,1) = complex<double>(0.0,-1.0); sy (1,0) = complex<double>(0.0,1.0);
     sz (0,0) = 1.0; sz (1,1) = -1.0;
@@ -17,24 +17,6 @@ VMPS::VMPS (const RI& ri)
 
     //  hset
     setMatrixH (ri);
-		//  output hset
-		cout << "hset is :" << endl;
-		for (int i=0; i<M; i++)
-		{
-			for (int j=0; j<N; j++)
-			{
-				if (hset[i][j] == sx) cout << "\tsx";
-				else if (hset[i][j] == -sx) cout << "\t-sx";
-				else if (hset[i][j] == sy) cout << "\tsy";
-				else if (hset[i][j] == -sy) cout << "\t-sy";
-				else if (hset[i][j] == sz) cout << "\tsz";
-				else if (hset[i][j] == -sz) cout << "\t-sz";
-				else if (hset[i][j] == id) cout << "\tid";
-			}
-			cout << "\n";
-		}
-		abort();
-
 
     //  init MPS
     mpsGS = new MPS (ri.NS, ri.VD, ri.USE_PBC, ri.INIT_CFG);
@@ -130,7 +112,7 @@ void VMPS::setMatrixH (const RI& ri)
     if (fabs (ri.J2X) > TINY) M += (ri.USE_PBC==true) ? N:N-2;
     if (fabs (ri.J2Y) > TINY) M += (ri.USE_PBC==true) ? N:N-2;
     if (fabs (ri.J2Z) > TINY) M += (ri.USE_PBC==true) ? N:N-2;
-    if (fabs (ri.HX)  > TINY) M += N;
+		if (fabs (ri.HX)  > TINY) M += N;
     if (fabs (ri.HY)  > TINY) M += N;
     if (fabs (ri.HZ)  > TINY) M += N;
 
@@ -143,7 +125,7 @@ void VMPS::setMatrixH (const RI& ri)
     int p = 0;
 
     //  J1X
-    if (fabs (ri.J1X) > TINY) 
+		if (fabs (ri.J1X) > TINY) 
     {
         for (int i=0; i<N-1; i++)
         {
@@ -164,7 +146,7 @@ void VMPS::setMatrixH (const RI& ri)
 
 				if (ri.USE_SPLIT)
 				{
-					hset[p+SPJ1X][SPJ1X] = hset[p+SPJ1X][SPJ1X+1] = id;
+					for(int j=0; j<N; j++) hset[p+SPJ1X][j] = zr;
 				}
 
         //  update
@@ -192,7 +174,7 @@ void VMPS::setMatrixH (const RI& ri)
 
 				if (ri.USE_SPLIT)
 				{
-					hset[p+SPJ1Y][SPJ1Y] = hset[p+SPJ1Y][SPJ1Y+1] = id;
+					for(int j=0; j<N; j++) hset[p+SPJ1Y][j] = zr;
 				}
 
         //  update
@@ -221,7 +203,7 @@ void VMPS::setMatrixH (const RI& ri)
 
 				if (ri.USE_SPLIT)
 				{
-					hset[p+SPJ1Z][SPJ1Z] = hset[p+SPJ1Z][SPJ1Z+1] = id;
+					for(int j=0; j<N; j++) hset[p+SPJ1Z][j] = zr;
 				}
 
         //  update
@@ -319,7 +301,7 @@ void VMPS::setMatrixH (const RI& ri)
     }
 
     //  Hx
-    if (fabs (ri.HX) > TINY)
+		if (fabs (ri.HX) > TINY)
     {
         for (int i=0; i<N; i++)
         {
@@ -1772,6 +1754,24 @@ int VMPS::Output (const RI& ri)
             << "\nSPLITJ1Z    =   " << ri.SPLITJ1Z
             << endl;
 
+		//  output hset
+		outfile << "\nhset is :" << endl;
+		for (int i=0; i<M; i++)
+		{
+			for (int j=0; j<N; j++)
+			{
+				if (hset[i][j] == sx) outfile << "\tsx";
+				else if (hset[i][j] == -sx) outfile << "\t-sx";
+				else if (hset[i][j] == sy) outfile << "\tsy";
+				else if (hset[i][j] == -sy) outfile << "\t-sy";
+				else if (hset[i][j] == sz) outfile << "\tsz";
+				else if (hset[i][j] == -sz) outfile << "\t-sz";
+				else if (hset[i][j] == id) outfile << "\tid";
+				else if (hset[i][j] == zr) outfile << "\tzr";
+			}
+			outfile << "\n";
+		}
+
     //  output energy
     outfile << "\ngroud state energy is: " << E0 << endl;
 
@@ -1838,7 +1838,7 @@ int VMPS::Output (const RI& ri)
         it++;
     }
 
-    assert (fabs (1.0-prob) < TINY);
+		assert (fabs (1.0-prob) < TINY);
     cout << endl;
 
     /**
